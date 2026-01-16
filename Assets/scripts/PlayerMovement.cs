@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float terminalVelocity = -50f;
 
+    
+
     public PlayerInputs inputs;
 
     private void Awake()

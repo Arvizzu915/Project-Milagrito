@@ -21,6 +21,8 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float rayDistance = 100f;
     [SerializeField] private LayerMask hitLayers = Physics.DefaultRaycastLayers;
 
+    private IInteractable currentObject;
+
     private RaycastHit currentHit; // store the latest raycast hit
     private bool hasHit;
 
@@ -34,6 +36,7 @@ public class PlayerCamera : MonoBehaviour
         lookAction.Enable();
 
         playerControls.InLevel.InteractMain.started += InteractMain;
+        playerControls.InLevel.InteractMain.canceled += StopInteracting;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -45,6 +48,7 @@ public class PlayerCamera : MonoBehaviour
         lookAction.Disable();
 
         playerControls.InLevel.InteractMain.started -= InteractMain;
+        playerControls.InLevel.InteractMain.canceled -= StopInteracting;
     }
 
     private void Update()
@@ -85,6 +89,16 @@ public class PlayerCamera : MonoBehaviour
         if (!hasHit) return;
 
         IInteractable interactable = currentHit.collider.GetComponent<IInteractable>();
-        interactable?.Interact();
+
+        if (interactable == null) return;
+        currentObject = interactable;
+        interactable.Interact();
     }
+
+    private void StopInteracting(InputAction.CallbackContext context)
+    {
+        if (currentObject == null) return;
+
+        currentObject.StopInteracting();
+    }    
 }
