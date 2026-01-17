@@ -9,6 +9,15 @@ public class CleaningSponge : MonoBehaviour
     public float completePercent = 80f;
     public string carTag;
 
+    [SerializeField]
+    private AudioClip brushSound1;
+    private SoundObject myAudioSource;
+
+    private void Awake()
+    {
+        TryGetComponent(out myAudioSource);
+    }
+
     private void Start()
     {
         ResetPaintMask();
@@ -28,6 +37,7 @@ public class CleaningSponge : MonoBehaviour
                 Vector2 uv = GetUV(meshCollider, contact.point);
                 if (uv != Vector2.zero)
                 {
+                    myAudioSource.PlaySound(brushSound1);
                     Paint(uv);
                 }
             }
