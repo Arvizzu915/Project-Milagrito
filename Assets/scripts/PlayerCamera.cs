@@ -22,9 +22,9 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float rayDistance = 100f;
     [SerializeField] private LayerMask hitLayers = Physics.DefaultRaycastLayers;
 
-    private IInteractable currentObject;
+    public IInteractable currentObject;
     private bool toolOnHand = false;
-    private ToolAC currentTool = null;
+    public ToolAC currentTool = null;
 
     private RaycastHit currentHit; // store the latest raycast hit
     private bool hasHit;
@@ -57,6 +57,11 @@ public class PlayerCamera : MonoBehaviour
 
     private void Update()
     {
+        if (toolOnHand)
+        {
+            PlayerGeneral.instance.pickingUp = true;
+        }
+
         mouseInput = playerControls.InLevel.Look.ReadValue<Vector2>();
 
         playerMov.transform.Rotate(Vector3.up, mouseInput.x * sensitivity * Time.deltaTime);
@@ -88,13 +93,21 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
+    public void DropObject()
+    {
+        if (currentObject == null) return;
+
+        PlayerGeneral.instance.pickingUp = false;
+        currentTool = null;
+        currentObject.StopInteracting();
+    }
+
     private void InteractMain(InputAction.CallbackContext context)
     {
         if (!hasHit) return;
 
         if (currentHit.collider.TryGetComponent<ToolAC>(out ToolAC tool))
         {
-            Debug.Log("tool");
             currentTool = tool;
             toolOnHand = true;
         }
@@ -105,17 +118,14 @@ public class PlayerCamera : MonoBehaviour
         interactable.Interact();
     }
 
-    private void StopInteracting(InputAction.CallbackContext context)
+    public void StopInteracting(InputAction.CallbackContext context)
     {
-        if (currentObject == null) return;
-
-        currentTool = null;
-        currentObject.StopInteracting();
-    }    
+        DropObject();
+    }
 
     private void UseTool(InputAction.CallbackContext context)
     {
-        if (toolOnHand)
+        if (toolOnHand && currentTool != null)
         {
             currentTool.Use();
         }

@@ -5,6 +5,7 @@ public class Lawnmower : ToolAC, IInteractable
 
     [SerializeField] private Rigidbody rb;
     [SerializeField] private float moveSpeed = 1f;
+    public float torqueStrength = .5f;
 
     public bool beingDragged = false;
     private Vector3 positionToMove = Vector3.zero;
@@ -12,12 +13,18 @@ public class Lawnmower : ToolAC, IInteractable
     public bool on = false;
 
     public float gas = 5;
+    private float gasDrain = 1f;
 
     private void FixedUpdate()
     {
         if (beingDragged)
         {
             rb.AddForce(positionToMove * moveSpeed, ForceMode.Force);
+
+            Vector3 desiredUp = Vector3.up;
+            Vector3 torqueVector = Vector3.Cross(transform.up, desiredUp) * torqueStrength;
+
+            rb.AddTorque(torqueVector);
         }
     }
 
@@ -30,7 +37,7 @@ public class Lawnmower : ToolAC, IInteractable
 
         if (on)
         {
-            gas -= Time.deltaTime;
+            gas -= Time.deltaTime * gasDrain;
         }
 
         if (gas <= 0)

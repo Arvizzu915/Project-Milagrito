@@ -6,7 +6,14 @@ public class GasMolecule : MonoBehaviour
 
     private void OnEnable()
     {
-        Invoke(nameof(ColEnable), .3f);
+        Invoke(nameof(ColEnable), .24f);
+
+        Invoke(nameof(Disable), 3f);
+    }
+
+    private void Disable()
+    {
+        gameObject.SetActive(false);
     }
 
     private void ColEnable()
@@ -18,7 +25,7 @@ public class GasMolecule : MonoBehaviour
     {
         if (other.TryGetComponent(out Lawnmower lawnmower))
         {
-            lawnmower.gas += .3f;
+            lawnmower.gas += 1;
         }
 
         gameObject.SetActive(false);
