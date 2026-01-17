@@ -370,7 +370,7 @@ MonoBehaviour:
   brushSize: 0.05
   completePercent: 5
   carTag: Car
-  brushSound1: {fileID: 8300000, guid: 1a41c0510e7096447819551b30823ee3, type: 3}
+  brushSound1: {fileID: 8300000, guid: 23a00e5d2d1192143af4cc8733f19c90, type: 3}
 --- !u!54 &363104841
 Rigidbody:
   m_ObjectHideFlags: 0
