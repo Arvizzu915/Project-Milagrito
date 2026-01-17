@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private LayerMask hitLayers = Physics.DefaultRaycastLayers;
 
     private IInteractable currentObject;
+    private bool toolOnHand = false;
+    private ToolAC currentTool = null;
 
     private RaycastHit currentHit; // store the latest raycast hit
     private bool hasHit;
@@ -37,6 +40,7 @@ public class PlayerCamera : MonoBehaviour
 
         playerControls.InLevel.InteractMain.started += InteractMain;
         playerControls.InLevel.InteractMain.canceled += StopInteracting;
+        playerControls.InLevel.InteractSecondary.started += UseTool;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -88,9 +92,15 @@ public class PlayerCamera : MonoBehaviour
     {
         if (!hasHit) return;
 
-        IInteractable interactable = currentHit.collider.GetComponent<IInteractable>();
+        if (currentHit.collider.TryGetComponent<ToolAC>(out ToolAC tool))
+        {
+            Debug.Log("tool");
+            currentTool = tool;
+            toolOnHand = true;
+        }
 
-        if (interactable == null) return;
+        
+        if (!currentHit.collider.TryGetComponent<IInteractable>(out var interactable)) return;
         currentObject = interactable;
         interactable.Interact();
     }
@@ -99,6 +109,15 @@ public class PlayerCamera : MonoBehaviour
     {
         if (currentObject == null) return;
 
+        currentTool = null;
         currentObject.StopInteracting();
     }    
+
+    private void UseTool(InputAction.CallbackContext context)
+    {
+        if (toolOnHand)
+        {
+            currentTool.Use();
+        }
+    }
 }
