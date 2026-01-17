@@ -9,15 +9,20 @@ public class Gasoline : ToolAC, IInteractable
     public bool beingDragged = false;
     private Vector3 positionToMove = Vector3.zero;
 
-    private float gasLeft = 40;
+    public float gasLeft = 40, gasLeftInit;
 
     private bool dropping = false;
     private float dropTimer = .2f;
     private float timer;
     [SerializeField] private GameObject gasMolecule;
 
-    [SerializeField] private Lawnmower lawnmower;
-    [SerializeField] private GrassManager grassManager;
+    private Lawnmower lawnmower;
+    private GrassManager grassManager;
+
+    private void OnEnable()
+    {
+        gasLeft = gasLeftInit;
+    }
 
     private void FixedUpdate()
     {
@@ -34,9 +39,9 @@ public class Gasoline : ToolAC, IInteractable
 
     private void Update()
     {
-        if (gasLeft <= 0 && grassManager.grassCount >= 0)
+        if (gasLeft <= 0)
         {
-            MissionTrigger.instance.missionFailed = true;
+            GasEmpty();
         }
 
         if (beingDragged)
@@ -47,6 +52,19 @@ public class Gasoline : ToolAC, IInteractable
         if (dropping && gasLeft >= 0)
         {
             DropGas();
+        }
+    }
+
+    private void GasEmpty()
+    {
+        if (!MissionManager.Instance.inMission) return;
+
+        lawnmower = FindFirstObjectByType<Lawnmower>();
+        grassManager = FindFirstObjectByType<GrassManager>();
+
+        if (lawnmower.gas <= 0 && grassManager.grassCount > 0)
+        {
+            MissionManager.Instance.currenMission.FailMission();
         }
     }
 
@@ -83,5 +101,10 @@ public class Gasoline : ToolAC, IInteractable
     {
         beingDragged = false;
         rb.useGravity = true;
+    }
+
+    public override void ResetUsing()
+    {
+        dropping = false;
     }
 }

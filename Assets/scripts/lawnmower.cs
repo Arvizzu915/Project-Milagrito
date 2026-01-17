@@ -12,8 +12,16 @@ public class Lawnmower : ToolAC, IInteractable
 
     public bool on = false;
 
-    public float gas = 5;
+    public float gas = 5, initGas = 5;
     private float gasDrain = 1f;
+
+    private Gasoline gasoline = null;
+    public GrassManager grassManager = null;
+
+    private void OnEnable()
+    {
+        gas = initGas;
+    }
 
     private void FixedUpdate()
     {
@@ -43,6 +51,26 @@ public class Lawnmower : ToolAC, IInteractable
         if (gas <= 0)
         {
             on = false;
+            EmptyTank();
+        }
+    }
+
+    private void Fail()
+    {
+
+        MissionManager.Instance.currenMission.FailMission();
+    }
+
+    private void EmptyTank()
+    {
+        if (!MissionManager.Instance.inMission) return;
+
+        gasoline = FindFirstObjectByType<Gasoline>();
+        grassManager = FindFirstObjectByType<GrassManager>();
+
+        if (gasoline.gasLeft <= 0 && grassManager.grassCount > 0)
+        {
+            Fail();
         }
     }
 
@@ -81,6 +109,12 @@ public class Lawnmower : ToolAC, IInteractable
         if (other.gameObject.TryGetComponent(out Grass grass))
         {
             grass.GetCut();
+            grassManager.grassCount--;
         }
+    }
+
+    public override void ResetUsing()
+    {
+        on = false;
     }
 }

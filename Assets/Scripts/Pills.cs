@@ -69,4 +69,8 @@ public class Pills : ToolAC, IInteractable
         beingDragged = false;
         rb.useGravity = true;
     }
+
+    public override void ResetUsing()
+    {
+    }
 }

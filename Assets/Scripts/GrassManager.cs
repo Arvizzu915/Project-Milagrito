@@ -1,20 +1,45 @@
 using UnityEngine;
 
-public class GrassManager : MonoBehaviour
+public class GrassManager : ReseteableObjectAC
 {
-    public GameObject[] grass;
+    public bool finalGrass = false;
+    public GameObject[] grassBlocks;
 
     public int grassCount;
-    private void Start()
+    private void OnEnable()
     {
-        grassCount = grass.Length;
+        if (finalGrass)
+        {
+            foreach (GameObject grass in grassBlocks)
+            {
+                grass.SetActive(true);
+            }
+        }
+
+        grassCount = grassBlocks.Length;
     }
 
     private void Update()
     {
-        if (grassCount <= 0)
+        if (grassCount <= 0 && MissionManager.Instance.inMission)
         {
-            MissionTrigger.instance.missionCompleted = true;
+            if (finalGrass)
+            {
+                MissionFinal missionFinal = FindFirstObjectByType<MissionFinal>();
+                missionFinal.missionsCompleted++;
+            }
+            MissionManager.Instance.currenMission.CompleteMission();
+            MissionManager.Instance.inMission = false;
         }
+    }
+
+    public override void ResetObject()
+    {
+        foreach (var grass in grassBlocks)
+        {
+            grass.SetActive(true);
+        }
+
+        grassCount = grassBlocks.Length;
     }
 }

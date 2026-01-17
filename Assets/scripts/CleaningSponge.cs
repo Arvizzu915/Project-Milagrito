@@ -1,7 +1,20 @@
 using UnityEngine;
 
-public class CleaningSponge : MonoBehaviour
+public class CleaningSponge : ToolAC, IInteractable
 {
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private float moveSpeed = 1f;
+    public float torqueStrength = .5f;
+
+    public bool beingDragged = false;
+    private Vector3 positionToMove = Vector3.zero;
+
+    private bool wet = false;
+    private float wetRate = 20f;
+    public float wetness = 30f;
+
+    private float dryRate = 2f;
+
     public Material carMAT;
     public RenderTexture paintMask;
     public Texture brushMask;
@@ -24,8 +37,61 @@ public class CleaningSponge : MonoBehaviour
         InvokeRepeating("CheckPaintPercent", 1f, 1f);
     }
 
+    private void Update()
+    {
+        if (beingDragged)
+        {
+            positionToMove = PlayerGeneral.instance.spot.position - transform.position;
+        }
+
+        if (wetness > 0)
+        {
+            wetness -= dryRate * Time.deltaTime;
+            wet = true;
+        }
+
+        if (wetness <= 0)
+        {
+            wet = false;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (beingDragged)
+        {
+            rb.AddForce(positionToMove * moveSpeed, ForceMode.Force);
+
+            Vector3 desiredUp = Vector3.up;
+            Vector3 torqueVector = Vector3.Cross(transform.up, desiredUp) * torqueStrength;
+
+            rb.AddTorque(torqueVector);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.TryGetComponent(out WaterBucket bucket))
+        {
+            if (bucket.waterLeft <= 0 && CheckPaintPercent() < 100)
+            {
+                MissionManager.Instance.currenMission.FailMission();
+            }
+            else
+            {
+                if (wetness < 100)
+                {
+                    wetness += wetRate;
+                    bucket.waterLeft -= wetRate;
+                }
+            }
+        }
+    }
+
     private void OnCollisionStay(Collision collision)
     {
+        if (!wet) return;
+
         if (collision.collider.CompareTag(carTag))
         {
             //Esto es para que si o si tengamos meshcollider
@@ -83,7 +149,7 @@ public class CleaningSponge : MonoBehaviour
         carMAT.SetTexture("_Mask", paintMask);
     }
 
-    private void CheckPaintPercent()
+    public float CheckPaintPercent()
     {
         Texture2D paintMaskTex = new(paintMask.width, paintMask.height, TextureFormat.RGBA32, false);
 
@@ -103,12 +169,33 @@ public class CleaningSponge : MonoBehaviour
         float paintPercent = ((float)paintedPixels / pixelsColors.Length) * 100f;
 
         Debug.Log(paintPercent);
-        if (paintPercent >= completePercent) 
+        if (paintPercent >= completePercent && MissionManager.Instance.inMission)
         {
             Debug.Log("listo");
             RenderTexture.active = paintMask;
             GL.Clear(true, true, new Color(1, 1, 1, 1));
             RenderTexture.active = null;
+
+            MissionManager.Instance.FinishMission();
         }
+
+        return paintPercent;
+    }
+
+    public void Interact()
+    {
+        beingDragged = true;
+        rb.useGravity = false;
+    }
+
+    public void StopInteracting()
+    {
+        beingDragged = false;
+        rb.useGravity = true;
+    }
+
+    public override void Use()
+    {
+        throw new System.NotImplementedException();
     }
 }

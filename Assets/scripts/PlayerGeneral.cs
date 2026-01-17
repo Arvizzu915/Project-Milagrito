@@ -7,14 +7,16 @@ public class PlayerGeneral : MonoBehaviour
 
     [SerializeField] private Slider staminaSlider;
     [SerializeField] private GameObject staminaBar;
-    [SerializeField] private PlayerCamera interactSys;
+    public PlayerCamera interactSys;
 
     public Transform spot;
 
     public float stamina = 100f;
     [SerializeField] private float staminaGainRate = 50f;
+    private float staminaRateRelative = 1;
 
     public bool pickingUp = false;
+    public bool running = false;
 
     private void Awake()
     {
@@ -23,18 +25,27 @@ public class PlayerGeneral : MonoBehaviour
 
     private void Update()
     {
+        staminaRateRelative = stamina / 100;
+        if (staminaRateRelative <= .3f)
+        {
+            staminaRateRelative = .3f;
+        }
+
+        if (staminaRateRelative >= .85)
+        {
+            staminaRateRelative = 1.2f;
+        }
+
         staminaSlider.value = stamina;
 
         if (pickingUp && interactSys.currentTool != null)
         {
             stamina -= Time.deltaTime * interactSys.currentTool.staminaDrain;
         }
-        else
+
+        if (stamina < 100)
         {
-            if (stamina < 100)
-            {
-                stamina += Time.deltaTime * staminaGainRate;
-            }
+            stamina += Time.deltaTime * staminaGainRate * staminaRateRelative;
         }
 
         if (stamina >= 100)
@@ -44,7 +55,7 @@ public class PlayerGeneral : MonoBehaviour
         }
         else
         {
-            staminaSlider.gameObject.SetActive(true);
+            staminaBar.gameObject.SetActive(true);
         }
 
         if (stamina <= 0 && pickingUp)
