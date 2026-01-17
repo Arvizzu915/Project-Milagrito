@@ -36,6 +36,11 @@ public  class MissionManager : MonoBehaviour
 
     public void FinishMission()
     {
+        if (missionsLeft <= 1)
+        {
+            missions[2].gameObject.SetActive(true);
+        }
+
         currenMission.CompleteMission();
 
         missions.Remove(currentMissionTrigger);
