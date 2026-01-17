@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
 public class PlayerCamera : MonoBehaviour
 {
+    public List<ReseteableObjectAC> objects = new();
+
     [SerializeField] private PlayerMovement playerMov;
 
     [SerializeField] float sensitivity;
@@ -41,6 +43,7 @@ public class PlayerCamera : MonoBehaviour
         playerControls.InLevel.InteractMain.started += InteractMain;
         playerControls.InLevel.InteractMain.canceled += StopInteracting;
         playerControls.InLevel.InteractSecondary.started += UseTool;
+        playerControls.InLevel.ResetObjects.started += ResetObjects;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -53,6 +56,8 @@ public class PlayerCamera : MonoBehaviour
 
         playerControls.InLevel.InteractMain.started -= InteractMain;
         playerControls.InLevel.InteractMain.canceled -= StopInteracting;
+        playerControls.InLevel.InteractSecondary.started -= UseTool;
+        playerControls.InLevel.ResetObjects.started -= ResetObjects;
     }
 
     private void Update()
@@ -128,6 +133,14 @@ public class PlayerCamera : MonoBehaviour
         if (toolOnHand && currentTool != null)
         {
             currentTool.Use();
+        }
+    }
+
+    public void ResetObjects(InputAction.CallbackContext context)
+    {
+        foreach (ReseteableObjectAC obj in objects)
+        {
+            obj.ResetObject();
         }
     }
 }

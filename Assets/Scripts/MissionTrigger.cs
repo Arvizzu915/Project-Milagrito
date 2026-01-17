@@ -3,7 +3,7 @@ using TMPro;
 
 public class MissionTrigger : MonoBehaviour, IInteractable
 {
-    public static MissionTrigger instance;
+    [SerializeField] private MissionAC mission;
 
     public bool missionStarted = false;
     public bool missionCompleted = false;
@@ -12,13 +12,9 @@ public class MissionTrigger : MonoBehaviour, IInteractable
     [SerializeField] private string[] dialogues;
     [SerializeField] private GameObject dialogueBox, missionSign, missionBox;
     [SerializeField] private TextMeshPro dialogue;
+    [SerializeField] private TextMeshProUGUI missionName;
 
     private int dialogueIndex = -1;
-
-    private void Awake()
-    {
-        instance = this;
-    }
 
     private void AdvanceDialogue()
     {
@@ -28,9 +24,15 @@ public class MissionTrigger : MonoBehaviour, IInteractable
 
     private void StartMission()
     {
+        missionName.text = mission.missionName;
+
         dialogueBox.SetActive(false);
         missionBox.SetActive(true);
         missionStarted = true;
+
+        MissionManager.Instance.StartMission(mission, this);
+
+        gameObject.SetActive(false);
     }
 
     public void Interact()
