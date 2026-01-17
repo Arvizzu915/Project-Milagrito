@@ -9,6 +9,8 @@ public class MissionCar : MissionAC
 
     public override void CompleteMission()
     {
+        carman.SetActive(true);
+
         carmanScrpit.SelectDialogue(0);
 
         carmanScrpit.StartCoroutine(nameof(carmanScrpit.ShutUp));

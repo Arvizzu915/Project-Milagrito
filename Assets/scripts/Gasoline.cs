@@ -16,8 +16,8 @@ public class Gasoline : ToolAC, IInteractable
     private float timer;
     [SerializeField] private GameObject gasMolecule;
 
-    private Lawnmower lawnmower;
-    private GrassManager grassManager;
+    public Lawnmower lawnmower;
+    public GrassManager grassManager;
 
     private void OnEnable()
     {
@@ -58,9 +58,6 @@ public class Gasoline : ToolAC, IInteractable
     private void GasEmpty()
     {
         if (!MissionManager.Instance.inMission) return;
-
-        lawnmower = FindFirstObjectByType<Lawnmower>();
-        grassManager = FindFirstObjectByType<GrassManager>();
 
         if (lawnmower.gas <= 0 && grassManager.grassCount > 0)
         {

@@ -15,7 +15,7 @@ public class Lawnmower : ToolAC, IInteractable
     public float gas = 5, initGas = 5;
     private float gasDrain = 1f;
 
-    private Gasoline gasoline = null;
+    public Gasoline gasoline = null;
     public GrassManager grassManager = null;
 
     private SoundObject myAudioSource;
@@ -75,9 +75,6 @@ public class Lawnmower : ToolAC, IInteractable
         myAudioSource.CancelCurrentSound();
         myAudioSource.PlaySoundIndex(1, 0.5f);
         if (!MissionManager.Instance.inMission) return;
-
-        gasoline = FindFirstObjectByType<Gasoline>();
-        grassManager = FindFirstObjectByType<GrassManager>();
 
         if (gasoline.gasLeft <= 0 && grassManager.grassCount > 0)
         {
