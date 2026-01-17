@@ -2,13 +2,26 @@ using UnityEngine;
 
 public class MissionFinalFinal : MissionAC
 {
-    [SerializeField] private GameObject pills;
+    [SerializeField] private GameObject pills, water;
     [SerializeField] private GameObject drugman;
+    [SerializeField] private GameObject drugmanRecieve;
     [SerializeField] private NPCCrackhead drugmanScript;
 
+    public bool recievedPill, recievedWater;
+
+    private void Update()
+    {
+        if (recievedPill && recievedWater)
+        {
+            CompleteMission();
+        }
+    }
+        
 
     public override void CompleteMission()
     {
+        drugmanRecieve.SetActive(false);
+
         drugman.SetActive(true);
 
         drugmanScript.StartInteraction();
@@ -37,6 +50,12 @@ public class MissionFinalFinal : MissionAC
 
     public override void StartMission()
     {
+        garrafon.instance.watering = true;
 
+        pills.SetActive(true);
+        pills.GetComponent<Pills>().missionScript = this;
+        water.GetComponent<WaterGlass>().missionScript = this;
+
+        drugmanRecieve.SetActive(true);
     }
 }

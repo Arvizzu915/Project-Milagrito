@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public class Pills : ToolAC, IInteractable
+public class WaterGlass : ToolAC, IInteractable
 {
+    private int waterInGlass = 0;
+
     public MissionFinalFinal missionScript;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private float moveSpeed = 1f;
@@ -9,11 +11,6 @@ public class Pills : ToolAC, IInteractable
 
     public bool beingDragged = false;
     private Vector3 positionToMove = Vector3.zero;
-
-    private bool closed = true;
-
-    [SerializeField] private GameObject cap;
-    [SerializeField] private Pill pills;
 
     private void FixedUpdate()
     {
@@ -36,31 +33,6 @@ public class Pills : ToolAC, IInteractable
         }
     }
 
-    public override void Use()
-    {
-        if (closed)
-        {
-            OpenPills();
-        }
-        else
-        {
-            DropPills();
-        }
-    }
-
-    private void OpenPills()
-    {
-        closed = false;
-        cap.transform.parent = null;
-        cap.AddComponent<Rigidbody>();
-    }
-
-    private void DropPills()
-    {
-        Pill pill = Instantiate(pills, transform.position, Quaternion.identity);
-        pill.missionScript = missionScript;
-    }
-
     public void Interact()
     {
         beingDragged = true;
@@ -73,7 +45,23 @@ public class Pills : ToolAC, IInteractable
         rb.useGravity = true;
     }
 
-    public override void ResetUsing()
+    public override void Use()
     {
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (waterInGlass >= 5 && collision.gameObject.CompareTag("drugman"))
+        {
+            missionScript.recievedWater = true;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("water"))
+        {
+            waterInGlass++;
+        }
     }
 }
