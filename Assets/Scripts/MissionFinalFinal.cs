@@ -50,6 +50,9 @@ public class MissionFinalFinal : MissionAC
 
     public override void StartMission()
     {
+        recievedPill = false;
+        recievedWater = false;
+
         garrafon.instance.watering = true;
 
         pills.SetActive(true);

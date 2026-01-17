@@ -1,45 +1,47 @@
 using UnityEngine;
+using TMPro;
 
 public class MissionFinal : MissionAC
 {
-    [SerializeField] private GameObject grass;
+    [SerializeField] private TextMeshProUGUI time;
+    [SerializeField] private GameObject grass, timerGO;
     [SerializeField] private GameObject crackHead;
     [SerializeField] private GameObject finalMission;
     public int missionsCompleted = 0;
 
+    private bool canComplete;
+
     [SerializeField] private float timer = 180f;
 
-    private float timeLeft;
-    private bool running = false;
+    public float timeLeft;
+    public bool running = false;
 
     private void Update()
     {
         if (!running) return;
 
-        if (missionsCompleted >= 1)
-        {
-            CompleteMission();
-        }
-
+        time.text = timeLeft.ToString("F0");
         timeLeft -= Time.deltaTime;
 
         if (timeLeft <= 0f)
         {
             timeLeft = 0f;
-            running = false;
             TimeFinish();
         }
     }
 
     protected virtual void TimeFinish()
     {
+        running = false;
         MissionManager.Instance.currenMission.FailMission();
     }
 
     public override void CompleteMission()
     {
-        running = false;
+        if (!canComplete) return;
 
+        timerGO.SetActive(false);
+        running = false;
         MissionManager.Instance.missionsLeft--;
         MissionManager.Instance.inMission = false;
 
@@ -48,7 +50,6 @@ public class MissionFinal : MissionAC
 
     public override void FailMission()
     {
-        running = false;
         ResetMission();
     }
 
@@ -69,9 +70,18 @@ public class MissionFinal : MissionAC
 
     public override void StartMission()
     {
-        timeLeft = timer;
         running = true;
-        //sonido de puerta cerrarse
+        canComplete = false;
+
+        timerGO.SetActive(true);
+        timeLeft = timer;
         grass.SetActive(true);
+
+        Invoke(nameof(EnableCompletion), 0.1f);
+    }
+
+    private void EnableCompletion()
+    {
+        canComplete = true;
     }
 }
