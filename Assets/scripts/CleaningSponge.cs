@@ -22,8 +22,6 @@ public class CleaningSponge : ToolAC, IInteractable
     public float completePercent = 80f;
     public string carTag;
 
-    [SerializeField]
-    private AudioClip brushSound1;
     private SoundObject myAudioSource;
 
     private void Awake()
@@ -83,6 +81,7 @@ public class CleaningSponge : ToolAC, IInteractable
                 {
                     wetness += wetRate;
                     bucket.waterLeft -= wetRate;
+                    myAudioSource.PlaySoundIndex(2, 0.5f);
                 }
             }
         }
@@ -90,7 +89,11 @@ public class CleaningSponge : ToolAC, IInteractable
 
     private void OnCollisionStay(Collision collision)
     {
-        if (!wet) return;
+        if (!wet)
+        {
+            myAudioSource.PlaySoundIndex(1, 1f);
+            return;
+        }
 
         if (collision.collider.CompareTag(carTag))
         {
@@ -103,7 +106,7 @@ public class CleaningSponge : ToolAC, IInteractable
                 Vector2 uv = GetUV(meshCollider, contact.point);
                 if (uv != Vector2.zero)
                 {
-                    myAudioSource.PlaySound(brushSound1);
+                    myAudioSource.PlaySoundIndex(0, 0.3f);
                     Paint(uv);
                 }
             }

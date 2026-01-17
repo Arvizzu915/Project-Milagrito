@@ -18,6 +18,13 @@ public class Lawnmower : ToolAC, IInteractable
     private Gasoline gasoline = null;
     public GrassManager grassManager = null;
 
+    private SoundObject myAudioSource;
+
+    private void Awake()
+    {
+        TryGetComponent(out myAudioSource);
+    }
+
     private void OnEnable()
     {
         gas = initGas;
@@ -45,11 +52,13 @@ public class Lawnmower : ToolAC, IInteractable
 
         if (on)
         {
+            myAudioSource.PlaySoundIndex(2, 0.1f);
             gas -= Time.deltaTime * gasDrain;
         }
 
-        if (gas <= 0)
+        if (gas <= 0 && on != false)
         {
+            //le agregue el on == false para que solo se vacie el tanque 1 vez, pero si da errores quitalo
             on = false;
             EmptyTank();
         }
@@ -63,6 +72,8 @@ public class Lawnmower : ToolAC, IInteractable
 
     private void EmptyTank()
     {
+        myAudioSource.CancelCurrentSound();
+        myAudioSource.PlaySoundIndex(1, 0.5f);
         if (!MissionManager.Instance.inMission) return;
 
         gasoline = FindFirstObjectByType<Gasoline>();
@@ -92,6 +103,7 @@ public class Lawnmower : ToolAC, IInteractable
         {
             if (gas >= 0)
             {
+                myAudioSource.PlaySoundIndex(0, 0.5f);
                 on = true;
             }
         }
@@ -108,6 +120,8 @@ public class Lawnmower : ToolAC, IInteractable
 
         if (other.gameObject.TryGetComponent(out Grass grass))
         {
+            myAudioSource.CancelCurrentSound();
+            myAudioSource.PlaySoundIndex(3, 0.7f);
             grass.GetCut();
             grassManager.grassCount--;
         }
