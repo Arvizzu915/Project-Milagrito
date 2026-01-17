@@ -44,6 +44,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        grounded = controller.isGrounded;
+
         Vector2 moveInput = inputs.InLevel.Move.ReadValue<Vector2>();
         Vector3 moveDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
 
@@ -104,6 +106,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (grounded)
         {
+            grounded = false;
             verticalVelocity = jumpForce;
         }
     }

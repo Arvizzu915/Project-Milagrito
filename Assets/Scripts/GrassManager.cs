@@ -13,23 +13,21 @@ public class GrassManager : ReseteableObjectAC
             foreach (GameObject grass in grassBlocks)
             {
                 grass.SetActive(true);
+                grassCount = 20;
             }
         }
-
-        grassCount = grassBlocks.Length;
+        else
+        {
+            grassCount = grassBlocks.Length;
+        }
     }
 
     private void Update()
     {
+        if (!MissionManager.Instance.inMission) return;
         if (grassCount <= 0 && MissionManager.Instance.inMission)
         {
-            if (finalGrass)
-            {
-                MissionFinal missionFinal = FindFirstObjectByType<MissionFinal>();
-                missionFinal.missionsCompleted++;
-            }
-            MissionManager.Instance.currenMission.CompleteMission();
-            MissionManager.Instance.inMission = false;
+            MissionManager.Instance.FinishMission();
         }
     }
 
