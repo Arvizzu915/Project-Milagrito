@@ -28,6 +28,7 @@ public  class MissionManager : MonoBehaviour
             m.gameObject.SetActive(false);
         }
 
+        currentMissionTrigger = trigger;
         missions.Remove(trigger);
 
         currenMission = mission;
@@ -36,18 +37,28 @@ public  class MissionManager : MonoBehaviour
 
     public void FinishMission()
     {
-        if (missionsLeft <= 1)
-        {
-            missions[2].gameObject.SetActive(true);
-        }
-
         currenMission.CompleteMission();
+        Debug.Log("finish mission");
+
+        
+
+        
 
         missions.Remove(currentMissionTrigger);
 
         foreach (MissionTrigger m in missions)
         {
+            
             m.gameObject.SetActive(true);
+        }
+
+        if (missionsLeft <= 1)
+        {
+            missions[1].gameObject.SetActive(true);
+        }
+        else
+        {
+            missions[1].gameObject.SetActive(false);
         }
     }
 }

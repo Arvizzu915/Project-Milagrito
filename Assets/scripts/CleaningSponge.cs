@@ -71,7 +71,7 @@ public class CleaningSponge : ToolAC, IInteractable
     {
         if (collision.gameObject.TryGetComponent(out WaterBucket bucket))
         {
-            if (bucket.waterLeft <= 0 && CheckPaintPercent() < 100)
+            if (bucket.waterLeft <= 0 && CheckPaintPercent() < 100 && MissionManager.Instance.inMission && wetness <= 0)
             {
                 MissionManager.Instance.currenMission.FailMission();
             }
@@ -81,6 +81,7 @@ public class CleaningSponge : ToolAC, IInteractable
                 {
                     wetness += wetRate;
                     bucket.waterLeft -= wetRate;
+                    myAudioSource.CancelCurrentSound();
                     myAudioSource.PlaySoundIndex(2, 0.5f);
                 }
             }
