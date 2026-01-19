@@ -25,7 +25,7 @@ public class GrassManager : ReseteableObjectAC
     private void Update()
     {
         if (!MissionManager.Instance.inMission) return;
-        if (grassCount <= 0 && MissionManager.Instance.inMission)
+        if (grassCount <= 0 && MissionManager.Instance.inMission && MissionManager.Instance.index == 1)
         {
             MissionManager.Instance.FinishMission();
         }

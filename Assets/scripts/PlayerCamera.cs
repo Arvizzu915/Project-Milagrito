@@ -21,7 +21,7 @@ public class PlayerCamera : MonoBehaviour
     private InputAction lookAction;
 
     [Header("Raycast Settings")]
-    [SerializeField] private float rayDistance = 100f;
+    [SerializeField] private float rayDistance = 2.5f;
     [SerializeField] private LayerMask hitLayers = Physics.DefaultRaycastLayers;
 
     public IInteractable currentObject;

@@ -26,14 +26,18 @@ public class PlayerGeneral : MonoBehaviour
     private void Update()
     {
         staminaRateRelative = stamina / 100;
-        if (staminaRateRelative <= .3f)
-        {
-            staminaRateRelative = .3f;
-        }
 
-        if (staminaRateRelative >= .85)
+        if (!running)
         {
-            staminaRateRelative = 1.2f;
+            if (staminaRateRelative <= .6f)
+            {
+                staminaRateRelative = .6f;
+            }
+
+            if (staminaRateRelative >= .75)
+            {
+                staminaRateRelative = 1.2f;
+            }
         }
 
         staminaSlider.value = stamina;

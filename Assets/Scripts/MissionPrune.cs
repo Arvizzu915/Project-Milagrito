@@ -42,6 +42,7 @@ public class MissionPrune : MissionAC
 
     public override void StartMission()
     {
+        MissionManager.Instance.index = 1;
         oldman.transform.position = oldmanSpawn.position;
         oldman.SetActive(true);
         blockingDoor.SetActive(false);

@@ -10,9 +10,11 @@ public  class MissionManager : MonoBehaviour
     public MissionAC currenMission;
     public MissionTrigger currentMissionTrigger = null;
 
-    public bool inMission, finalActivated = false;
+    public bool inMission;
 
-    public int missionsLeft = 5;
+    public int missionsLeft = 3;
+
+    public int index;
 
 
     private void Awake()
@@ -48,21 +50,6 @@ public  class MissionManager : MonoBehaviour
             m.gameObject.SetActive(true);
         }
 
-        if (missionsLeft > 0)
-        {
-            if (missionsLeft <= 1 && !finalActivated)
-            {
-                finalActivated = true;
-                missions[1].gameObject.SetActive(true);
-            }
-            else
-            {
-                if (missions[1] != null)
-                {
-                    missions[1].gameObject.SetActive(false);
-                }
-            }
-        }
         
     }
 }

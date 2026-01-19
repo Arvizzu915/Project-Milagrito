@@ -36,7 +36,8 @@ public class MissionCar : MissionAC
     }
 
     public override void StartMission()
-    {   
+    {
+        MissionManager.Instance.index = 2;
         //sonido de puerta cerrarse
         sponge.SetActive(true);
     }
