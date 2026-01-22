@@ -64,6 +64,7 @@ public class FetchState : DogStateMachine
         {
             if (fetched)
             {
+                fetching = false;
                 fetched = false;
                 dog.ChangeState(dog.walk);
             }
