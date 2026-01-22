@@ -26,6 +26,11 @@ public class FetchState : DogStateMachine
         dog.stamina -= dog.staminaDrainRate * Time.deltaTime;
         dog.peeMeter -= dog.peeFillRate * Time.deltaTime;
 
+        if (!fetching && Stick.instance.inHand)
+        {
+            StickDropped(dog);
+        }
+
         if (fetched)
         {
             Stick.instance.transform.position = dog.mouth.position;
