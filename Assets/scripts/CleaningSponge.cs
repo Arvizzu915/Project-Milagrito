@@ -172,7 +172,6 @@ public class CleaningSponge : ToolAC, IInteractable
 
         float paintPercent = ((float)paintedPixels / pixelsColors.Length) * 100f;
 
-        Debug.Log(paintPercent);
         if (paintPercent >= completePercent && MissionManager.Instance.inMission && MissionManager.Instance.index == 2)
         {
             Debug.Log("listo");
