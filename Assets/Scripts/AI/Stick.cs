@@ -41,7 +41,7 @@ public class Stick : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        
+        dog.OnStickInHand();
         inHand = true;
         beingDragged = true;
         rb.useGravity = false;
